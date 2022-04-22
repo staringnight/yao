@@ -1,37 +1,65 @@
-### 3 分钟了解如何进入开发
+### 依赖本模块
 
-欢迎使用云效 Codeup，通过阅读以下内容，你可以快速熟悉 Codeup ，并立即开始今天的工作。
+引入时scope请设为provided,子项目可继承依赖，同级依赖不会传递此模块
 
-### 提交**文件**
+```xml
 
-首先，你需要了解在 Codeup 中如何提交代码文件，跟着文档「[__提交第一行代码__](https://thoughts.aliyun.com/sharespace/5e8c37eb546fd9001aee8242/docs/5e8c37e7546fd9001aee81fd)」一起操作试试看吧。
+<dependency>
+    <groupId>com.dazhi100</groupId>
+    <artifactId>dzyx-common</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <scope>provided</scope>
+</dependency>
+```
 
-### 开启扫描
+本项目会传递的依赖为
 
-开发过程中，为了更好的管理你的代码资产，Codeup 内置了「[__代码规约扫描__](https://thoughts.aliyun.com/sharespace/5e8c37eb546fd9001aee8242/docs/5e8c37e8546fd9001aee821c)」和「[__敏感信息检测__](https://thoughts.aliyun.com/sharespace/5e8c37eb546fd9001aee8242/docs/5e8c37e8546fd9001aee821b)」服务，你可以在代码库设置-集成与服务中一键开启，开启后提交或合并请求的变更将自动触发扫描，并及时提供结果反馈。
+- `guava`    jdk的补充
+- `hutool-core`     id工具，脱敏工具，io工具，file工具，resource工具
+- [`hutool-crypto`](https://hutool.cn/docs/#/crypto/%E6%A6%82%E8%BF%B0) 加密工具
+- `lombok` 简化开发
+- [`mapstruct`](https://github.com/mapstruct/mapstruct) 需要idea下载插件，非常强大的bean转换工具，bean之间的转换请用这个，不要使用beanUtils（性能太差）
+- [`metrics`](https://github.com/dropwizard/metrics) 数据埋点，应用监控工具类
 
-![](https://img.alicdn.com/tfs/TB1nRDatoz1gK0jSZLeXXb9kVXa-1122-380.png "")
+### 目录结构描述
 
-![](https://img.alicdn.com/tfs/TB1PrPatXY7gK0jSZKzXXaikpXa-1122-709.png "")
+```
+├── annotation                                     // 注解目录  
+│   ├── ErrorCode                                  // 配置在请求参数模型field上，配合参数校验注解，校验不通过时，直接返回对应错误码  
+│   └── NotWarpResponseBody                        // 配置在controller的method上，配置此参数，则不会被自动包装为ResultVo,可以以原始格式返回  
+├── bean                                           // bean  
+│   └── Result                                     // Api层统一的返回格式，只能使用success或error静态方法生成，中途无法被修改  
+├── component                                      // 公共组件，需要被springIOC管理  
+│   ├── infrastructure                             // 基础设施层公共组件。ACL的module扫描此包  
+│   │   └──SnowflakeConfig                         // 雪花算法组件，需要yml中包含`snow.wokerId`和`snow.datacenterId`  
+│   └── web                                        // web公共组件。  
+│       ├── GlobalExceptionHandler                 // 全局异常捕捉处理，order等级低  
+│       ├── WebExceptionHandler                    // web细分异常捕捉处理，order等级高  
+│       ├── ResponseControllerAdvice               // 对httpResponse进行包装，将对象统一包装成resultVo，已包装活标注`@NotWarpResponseBody`则不再包装  
+│       ├── SwaggerConfig                          // 对swagger的配置，需要yml中包含`swagger.enable`和`swagger.basePackage`  
+│       └── WebConfig                              // 配置WebMvcConfigurer相关的东西  
+├── constant                                       // 常量包   
+│   ├── ApplicationConstant                        // Application公用常量  
+│   ├── ExcelConstant                              // Excel常量  
+│   └── ResultCode                                 // 错误码  
+├── dict                                           // 字典，enum包  
+│   ├── base  
+│   │   ├── DescBaseEnum                           // Enum的描述  
+│   │   ├── IdBaseEnum                             // Enum的id  
+│   │   └── NromalEnum                             // 通用Enum模板 类似ON(0, "on")  
+│   ├── ONOFF                                      // 开启关闭状态的Enum 
+│   ├── ...待补充 
+├── exception                                      // 通用exception包  
+│   ├── ApiException                               // Api调用失败通用exception  
+│   └── EnumException                              // Enum不合法通用exception  
+└── utils
+    ├── ApiAssert                                  // api快速失败，并抛出异常，用于检验
+    ├── CryptoUtils                                // 加密相关工具
+    ├── DataDesensitizedUtil                       // 脱敏相关工具
+    ├── DateCategoryUtil                           // 日期分类工具，不包含自定义假期判断，如寒暑假，每个学校不一样，如有必要，应配合学校服务判断
+    ├── ImgVerifyCodeUtil                          // 验证码工具类，暂时用之前的，如有必要，之后再进行更换
+    ├── JSON                                       // 基于jackson封装的json工具类，请统一json解析工具使用，不要同时引入3种不同json解析工具
+    ├── UUIDUtil                                   // 字面意思
+    └── ...待补充
 
-### 代码评审
-
-功能开发完毕后，通常你需要发起「[__代码合并和评审__](https://thoughts.aliyun.com/sharespace/5e8c37eb546fd9001aee8242/docs/5e8c37e8546fd9001aee8216)」，Codeup 支持多人协作的代码评审服务，你可以通过「[__保护分支__](https://thoughts.aliyun.com/sharespace/5e8c37eb546fd9001aee8242/docs/5e8c37e9546fd9001aee8221)」策略及「[__合并请求设置__](https://thoughts.aliyun.com/sharespace/5e8c37eb546fd9001aee8242/docs/5e8c37e9546fd9001aee8224)」对合并过程进行流程化管控，同时提供 WebIDE 在线代码评审及冲突解决能力，让你的评审过程更加流畅。
-
-![](https://img.alicdn.com/tfs/TB1XHrctkP2gK0jSZPxXXacQpXa-1432-887.png "")
-
-![](https://img.alicdn.com/tfs/TB1V3fctoY1gK0jSZFMXXaWcVXa-1432-600.png "")
-
-### 编写文档
-
-项目推进过程中，你的经验和感悟可以直接记录到 Codeup 代码库的「[__文档__](https://thoughts.aliyun.com/sharespace/5e8c37eb546fd9001aee8242/docs/5e8c37e8546fd9001aee8213)」内，让智慧可视化。
-
-![](https://img.alicdn.com/tfs/TB1BN2ateT2gK0jSZFvXXXnFXXa-1432-700.png "")
-
-### 成员协作
-
-是时候邀请成员一起编写卓越的代码工程了，请点击右上角「成员」邀请你的小伙伴开始协作吧！
-
-### 更多
-
-Git 使用教学、高级功能指引等更多说明，参见[__Codeup帮助文档__](https://thoughts.aliyun.com/sharespace/5e8c37eb546fd9001aee8242/docs/5e8c37e6546fd9001aee81fa)。
+```
