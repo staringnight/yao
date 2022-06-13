@@ -35,7 +35,7 @@
 │   └── web                                        // web公共组件。  
 │       ├── GlobalExceptionHandler                 // 全局异常捕捉处理，order等级低  
 │       ├── WebExceptionHandler                    // web细分异常捕捉处理，order等级高  
-│       ├── ResponseControllerAdvice               // 对httpResponse进行包装，将对象统一包装成resultVo，已包装活标注`@NotWarpResponseBody`则不再包装  
+│       ├── ResponseControllerAdvice               // 对httpResponse进行包装，将对象统一包装成resultVo，已包装或标注`@NotWarpResponseBody`则不再包装  
 │       ├── SwaggerConfig                          // 对swagger的配置，需要yml中包含`swagger.enable`和`swagger.basePackage`  
 │       └── WebConfig                              // 配置WebMvcConfigurer相关的东西  
 ├── constant                                       // 常量包   

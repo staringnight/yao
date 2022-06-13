@@ -21,6 +21,7 @@ public enum ResultCode {
 
     COMMON_PARAMS_ERROR(1001, "请求参数错误"),
     COMMON_HTTP_METHOD_ERROR(1002, "http请求方式错误"),
+    COMMON_CLIENT_CACHE_ERROR(1003, "客户端缓存配置错误"),
 
 
     //---------------------------old, 考虑是否沿用-----------------------//
