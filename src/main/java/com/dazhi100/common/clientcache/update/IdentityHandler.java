@@ -1,6 +1,7 @@
 package com.dazhi100.common.clientcache.update;
 
 import com.dazhi100.common.clientcache.EtagStoreManager;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @Order(99)
 @Component
+@Slf4j
 public class IdentityHandler implements UpdateClientCacheHandler {
 
     private EtagStoreManager storeManager;
@@ -26,6 +28,10 @@ public class IdentityHandler implements UpdateClientCacheHandler {
 
     @Override
     public void handler(String key, JoinPoint joinPoint, Object returnValue) {
-        storeManager.update(key);
+        try {
+            storeManager.del(key);
+        } catch (Exception e) {
+            log.error("IdentityHandler error", e);
+        }
     }
 }

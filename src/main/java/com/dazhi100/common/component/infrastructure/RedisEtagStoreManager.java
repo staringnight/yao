@@ -1,7 +1,16 @@
 package com.dazhi100.common.component.infrastructure;
 
 import com.dazhi100.common.clientcache.EtagStoreManager;
+import com.dazhi100.common.constant.ResultCode;
+import com.dazhi100.common.exception.ApiException;
+import com.dazhi100.common.exception.RedisException;
+import com.dazhi100.common.utils.ApiAssert;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import java.util.UUID;
 
 /**
  * expire 7 day + 随机24小时内任意秒数，
@@ -9,19 +18,48 @@ import org.springframework.stereotype.Component;
  * （update不更新时间，无key不新建），自动淘汰非热点key，根据线上占用空间实际调整
  */
 @Component
+@Slf4j
 public class RedisEtagStoreManager implements EtagStoreManager {
+    private static final int EXPIRE_TIME = 7 * 24 * 60 * 60;
+    private RedisUtil redisUtil;
+
+    @Autowired
+    public RedisEtagStoreManager(RedisUtil redisUtil) {
+        this.redisUtil = redisUtil;
+    }
+
+    private void checkKey(String key) {
+        ApiAssert.contains(key, "?", ResultCode.COMMON_PARAMS_ERROR);
+    }
+
     @Override
     public String get(String key) {
-        return null;
+        try {
+            checkKey(key);
+            String s = redisUtil.get(key);
+            int expire = EXPIRE_TIME + (int) (Math.random() * 24 * 60 * 60);
+            if (StringUtils.hasLength(s)) {
+                redisUtil.expire(key, expire);
+                return s;
+            }
+            String uuid = UUID.randomUUID().toString();
+            redisUtil.set(key, uuid, expire);
+            return uuid;
+        } catch (RedisException e) {
+            log.error("RedisEtagStoreManager get error", e);
+            throw new ApiException(e.getResultCode());
+        }
     }
 
     @Override
-    public String update(String key) {
-        return null;
+    public Boolean del(String key) {
+        try {
+            checkKey(key);
+            return redisUtil.remove(key);
+        } catch (RedisException e) {
+            log.error("RedisEtagStoreManager update error", e);
+            throw new ApiException(e.getResultCode());
+        }
     }
 
-    @Override
-    public boolean del(String key) {
-        return false;
-    }
 }

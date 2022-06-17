@@ -1,11 +1,11 @@
 package com.dazhi100.common.clientcache;
 
+import com.dazhi100.common.exception.ApiException;
+
 public interface EtagStoreManager {
 
-    String get(String key);
+    String get(String key) throws ApiException;
 
-    String update(String key);
-
-    boolean del(String key);
+    Boolean del(String key) throws ApiException;
 
 }

@@ -6,8 +6,10 @@ import com.dazhi100.common.clientcache.EtagStoreManager;
 import com.dazhi100.common.clientcache.query.ClientCacheQueryMatcher;
 import com.dazhi100.common.constant.ResultCode;
 import com.dazhi100.common.utils.ApiAssert;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
@@ -15,7 +17,11 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+/**
+ * @author mac
+ */
 @RestControllerAdvice
+@Slf4j
 public class ClientCacheResponseAdvice implements ResponseBodyAdvice<Object> {
 
     private ClientCacheQueryMatcher clientCacheConfig;
@@ -33,15 +39,18 @@ public class ClientCacheResponseAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
     public Object beforeBodyWrite(Object data, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-        ClientCacheConfigBean config = clientCacheConfig.getKeyConfigFromPath(request.getURI().getPath());
-        String keyConfig = config.getKeyConfig();
-        String matcherConfig = config.getMatcherConfig();
-
-        String realKey = ClientCacheConfigBean.expressKey(keyConfig, matcherConfig, request);
-        ApiAssert.hasLength(realKey, ResultCode.COMMON_CLIENT_CACHE_ERROR);
-        String Etag = storeManager.get(realKey);
-        ApiAssert.hasLength(Etag, ResultCode.COMMON_CLIENT_CACHE_ERROR);
-        response.getHeaders().add("Etag", Etag);
+        try {
+            ClientCacheConfigBean config = clientCacheConfig.getKeyConfigFromPath(request.getURI().getPath());
+            String keyConfig = config.getKeyConfig();
+            String matcherConfig = config.getMatcherConfig();
+            String realKey = ClientCacheConfigBean.expressKey(keyConfig, matcherConfig, request);
+            ApiAssert.hasLength(realKey, ResultCode.COMMON_CLIENT_CACHE_ERROR);
+            String Etag = storeManager.get(realKey);
+            ApiAssert.hasLength(Etag, ResultCode.COMMON_CLIENT_CACHE_ERROR);
+            response.getHeaders().set(HttpHeaders.ETAG, Etag);
+        } catch (Exception e) {
+            log.error("ClientCacheResponseAdvice error", e);
+        }
         return data;
     }
 }

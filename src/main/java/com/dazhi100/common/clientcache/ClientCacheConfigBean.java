@@ -7,7 +7,7 @@ import com.dazhi100.common.utils.ApiAssert;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.aspectj.lang.JoinPoint;
-import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.HttpRequest;
 
 import java.util.Arrays;
 
@@ -33,7 +33,7 @@ public class ClientCacheConfigBean {
     String matcherConfig;
 
 
-    public static String expressKey(String keyConfig, String matcherConfig, ServerHttpRequest request) {
+    public static String expressKey(String keyConfig, String matcherConfig, HttpRequest request) {
         StringBuilder key = new StringBuilder(getSourceRule(keyConfig));
 
         for (CacheField cacheField : CacheField.values()) {
@@ -51,7 +51,7 @@ public class ClientCacheConfigBean {
         return key.toString();
     }
 
-    public static String fill(String keyConfig, String matcherConfig, ServerHttpRequest request, CacheField cacheField) {
+    public static String fill(String keyConfig, String matcherConfig, HttpRequest request, CacheField cacheField) {
         return getKeyRule(keyConfig, cacheField.getIndex())
                 .fill(getPathRegRule(matcherConfig, cacheField.getIndex())
                         .find(request,
