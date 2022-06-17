@@ -5,12 +5,11 @@ import com.dazhi100.common.constant.ResultCode;
 import com.dazhi100.common.exception.ApiException;
 import com.dazhi100.common.exception.RedisException;
 import com.dazhi100.common.utils.ApiAssert;
+import com.dazhi100.common.utils.UUIDUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
-import java.util.UUID;
 
 /**
  * expire 7 day + 随机24小时内任意秒数，
@@ -42,7 +41,7 @@ public class RedisEtagStoreManager implements EtagStoreManager {
                 redisUtil.expire(key, expire);
                 return s;
             }
-            String uuid = UUID.randomUUID().toString();
+            String uuid = UUIDUtil.getUUID();
             redisUtil.set(key, uuid, expire);
             return uuid;
         } catch (RedisException e) {
