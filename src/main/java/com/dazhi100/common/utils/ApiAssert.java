@@ -91,6 +91,16 @@ public class ApiAssert {
         return all;
     }
 
+    public static String notContains(String part, String all, ResultCode code) {
+        ApiAssert.isNotTrue(all.contains(part), code);
+        return all;
+    }
+
+    public static String notContains(String part, String all, ResultCode code, String msg) {
+        ApiAssert.isNotTrue(all.contains(part), code, msg);
+        return all;
+    }
+
     public static String matches(String s, String regex, ResultCode code) {
         ApiAssert.isTrue(s.matches(regex), code);
         return s;

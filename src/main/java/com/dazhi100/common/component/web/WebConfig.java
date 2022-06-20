@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
     private final String baseUrl;
 
-    public WebConfig(@Value("${server.name}") String baseUrl) {
+    public WebConfig(@Value("${spring.application.name}") String baseUrl) {
         this.baseUrl = baseUrl;
     }
 

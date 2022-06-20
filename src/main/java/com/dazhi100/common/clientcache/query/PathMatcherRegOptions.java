@@ -28,8 +28,9 @@ public enum PathMatcherRegOptions implements MatcherRegOption {
                 sb = new StringBuilder("?");
                 index = request.getURI().getQuery().indexOf(sb.append(field).toString());
             }
-            int lastIndex = query.indexOf("&", index);
-            return query.substring(index, lastIndex < 0 ? query.length() : lastIndex);
+            int beginIndex = query.indexOf("=", index) + 1;
+            int lastIndex = query.indexOf("&", beginIndex);
+            return query.substring(beginIndex, lastIndex < 0 ? query.length() : lastIndex);
         }
     },
     TOKEN("t") {

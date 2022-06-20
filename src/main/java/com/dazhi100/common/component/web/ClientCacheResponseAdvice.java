@@ -8,6 +8,7 @@ import com.dazhi100.common.constant.ResultCode;
 import com.dazhi100.common.utils.ApiAssert;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -26,6 +27,8 @@ public class ClientCacheResponseAdvice implements ResponseBodyAdvice<Object> {
 
     private ClientCacheQueryMatcher clientCacheConfig;
     private EtagStoreManager storeManager;
+    @Value("${spring.application.name}")
+    private String baseUrl;
 
     public ClientCacheResponseAdvice(@Autowired ClientCacheQueryMatcher clientCacheConfig, @Autowired EtagStoreManager storeManager) {
         this.clientCacheConfig = clientCacheConfig;
@@ -40,7 +43,7 @@ public class ClientCacheResponseAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public Object beforeBodyWrite(Object data, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         try {
-            ClientCacheConfigBean config = clientCacheConfig.getKeyConfigFromPath(request.getURI().getPath());
+            ClientCacheConfigBean config = clientCacheConfig.getKeyConfigFromPath("/" + baseUrl + request.getURI().getPath());
             String keyConfig = config.getKeyConfig();
             String matcherConfig = config.getMatcherConfig();
             String realKey = ClientCacheConfigBean.expressKey(keyConfig, matcherConfig, request);

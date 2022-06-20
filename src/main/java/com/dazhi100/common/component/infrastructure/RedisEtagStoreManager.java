@@ -8,6 +8,8 @@ import com.dazhi100.common.utils.ApiAssert;
 import com.dazhi100.common.utils.UUIDUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -18,6 +20,7 @@ import org.springframework.util.StringUtils;
  */
 @Component
 @Slf4j
+@ConditionalOnClass(RedisTemplate.class)
 public class RedisEtagStoreManager implements EtagStoreManager {
     private static final int EXPIRE_TIME = 7 * 24 * 60 * 60;
     private RedisUtil redisUtil;
@@ -28,7 +31,7 @@ public class RedisEtagStoreManager implements EtagStoreManager {
     }
 
     private void checkKey(String key) {
-        ApiAssert.contains(key, "?", ResultCode.COMMON_PARAMS_ERROR);
+        ApiAssert.notContains("?", key, ResultCode.COMMON_PARAMS_ERROR);
     }
 
     @Override

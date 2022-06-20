@@ -32,6 +32,7 @@ public enum DefaultArgMatcherRegOption implements ArgMatcherRegOption {
             int index = ArrayUtil.indexOf(parameterNames, field);
             ApiAssert.isTrue(index > -1, ResultCode.COMMON_CLIENT_CACHE_ERROR, "do not have field " + field);
             Object[] args = joinPoint.getArgs();
+            //// TODO: 2022/6/20  反射获取参数值
             return String.valueOf(args[index]);
         }
     }
