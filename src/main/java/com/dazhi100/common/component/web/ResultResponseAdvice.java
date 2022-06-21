@@ -3,6 +3,7 @@ package com.dazhi100.common.component.web;
 import com.dazhi100.common.annotation.NotWarpResponseBody;
 import com.dazhi100.common.bean.Result;
 import com.dazhi100.common.utils.JSON;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -11,6 +12,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+@ConditionalOnClass(ResponseBodyAdvice.class)
 @RestControllerAdvice
 public class ResultResponseAdvice implements ResponseBodyAdvice<Object> {
     @Override

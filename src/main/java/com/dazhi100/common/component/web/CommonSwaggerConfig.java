@@ -1,6 +1,7 @@
 package com.dazhi100.common.component.web;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -20,8 +21,9 @@ import java.util.Collections;
 
 @EnableOpenApi
 @Configuration
-@Profile({"dev", "test"})
-public class SwaggerConfig {
+@ConditionalOnClass(Docket.class)
+@Profile({"develop", "local"})
+public class CommonSwaggerConfig {
     public static final String SWAGGER_VERSION = "1.0.0";
     public static final String SWAGGER_TITLE = "大智云校 SERVER API";
 

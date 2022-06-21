@@ -44,9 +44,10 @@ public class ClientCacheConfigBean {
 
     public static String expressKey(String keyConfig, String matcherConfig, ArgMatcherRegOption[] argMatcherRegOptions, JoinPoint joinPoint) {
         StringBuilder key = new StringBuilder(getSourceRule(keyConfig));
-
+        String model = getRule(matcherConfig, 0);
         for (CacheField cacheField : CacheField.values()) {
-            key.append(fill(keyConfig, matcherConfig, argMatcherRegOptions, joinPoint, cacheField));
+            String rule = getRule(matcherConfig, cacheField.getIndex());
+            key.append(fill(keyConfig, rule, model, argMatcherRegOptions, joinPoint, cacheField));
         }
         return key.toString();
     }
@@ -58,15 +59,14 @@ public class ClientCacheConfigBean {
                                 cacheField == OTHER ? getRule(keyConfig, OTHER.getIndex()) : cacheField.getField()));
     }
 
-    public static String fill(String keyConfig, String matcherConfig, ArgMatcherRegOption[] argRegOptions, JoinPoint joinPoint, CacheField cacheField) {
-        String rule = getRule(matcherConfig, cacheField.getIndex());
+    public static String fill(String keyConfig, String rule, String model, ArgMatcherRegOption[] argRegOptions, JoinPoint joinPoint,
+                              CacheField cacheField) {
         String field = cacheField == OTHER ? getRule(keyConfig, cacheField.getIndex()) : cacheField.getField();
-        String fillString = Arrays.stream(argRegOptions)
+        StringBuilder fillString = new StringBuilder();
+        Arrays.stream(argRegOptions)
                 .filter(a -> a.match(rule))
-                .findFirst()
-                .map(a -> a.find(joinPoint, field))
-                .orElse(null);
-        return getKeyRule(keyConfig, cacheField.getIndex()).fill(fillString);
+                .forEach(a -> fillString.append(a.find(joinPoint, field, model)));
+        return getKeyRule(keyConfig, cacheField.getIndex()).fill(fillString.toString());
     }
 
     public static KeyRegOption getKeyRule(String keyConfig, int i) {

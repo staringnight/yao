@@ -48,8 +48,7 @@ public class UpdateClientCacheAspect {
             ApiAssert.hasLength(key, ResultCode.COMMON_CLIENT_CACHE_ERROR);
             handlers.stream()
                     .filter(h -> h.match(key))
-                    .findFirst()
-                    .ifPresent(h -> h.handler(key, joinPoint, returnValue));
+                    .forEach(h -> h.handler(key, joinPoint, returnValue));
         } catch (Exception e) {
             log.error("update client cache error", e);
             //TODO: 通知处理

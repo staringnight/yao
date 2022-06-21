@@ -9,6 +9,7 @@ import com.dazhi100.common.utils.ApiAssert;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 /**
  * @author mac
  */
+@ConditionalOnClass(ResponseBodyAdvice.class)
 @RestControllerAdvice
 @Slf4j
 public class ClientCacheResponseAdvice implements ResponseBodyAdvice<Object> {

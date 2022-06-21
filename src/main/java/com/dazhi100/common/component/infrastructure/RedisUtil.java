@@ -5,6 +5,7 @@ import com.dazhi100.common.exception.RedisException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Component
+@ConditionalOnClass(RedisTemplate.class)
 public class RedisUtil {
     static final Logger logger = LoggerFactory.getLogger(RedisUtil.class);
 

@@ -1,12 +1,14 @@
 package com.dazhi100.common.component.web;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@ConditionalOnClass(WebMvcConfigurer.class)
 @Component
 public class WebConfig implements WebMvcConfigurer {
     private final String baseUrl;

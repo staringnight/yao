@@ -5,6 +5,7 @@ import com.dazhi100.common.bean.Result;
 import com.dazhi100.common.constant.ResultCode;
 import com.dazhi100.common.exception.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -14,11 +15,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.servlet.http.HttpServlet;
 import java.lang.reflect.Field;
 
 @Order(-1)
 @Slf4j
 @RestControllerAdvice
+@ConditionalOnClass(HttpServlet.class)
 public class WebExceptionHandler {
 
     @ExceptionHandler(ApiException.class)

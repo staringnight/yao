@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Repeatable(UpdateClientCaches.class )
+@Repeatable(UpdateClientCaches.class)
 public @interface UpdateClientCache {
 
     String keyReg();
@@ -16,6 +16,5 @@ public @interface UpdateClientCache {
     String argReg();
 
     Class<? extends ArgMatcherRegOption> argRegOptions() default DefaultArgMatcherRegOption.class;
-
 
 }

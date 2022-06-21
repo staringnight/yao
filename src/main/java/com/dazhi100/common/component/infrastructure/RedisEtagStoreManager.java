@@ -7,7 +7,6 @@ import com.dazhi100.common.exception.RedisException;
 import com.dazhi100.common.utils.ApiAssert;
 import com.dazhi100.common.utils.UUIDUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -17,15 +16,17 @@ import org.springframework.util.StringUtils;
  * expire 7 day + 随机24小时内任意秒数，
  * （每次get更新过期时间，无key创建---需前置调用get方法时、get方法创建key时均校验key的正确性，不能随意创建）
  * （update不更新时间，无key不新建），自动淘汰非热点key，根据线上占用空间实际调整
+ * 直接注入使用
+ * @author mac
  */
 @Component
 @Slf4j
 @ConditionalOnClass(RedisTemplate.class)
 public class RedisEtagStoreManager implements EtagStoreManager {
-    private static final int EXPIRE_TIME = 7 * 24 * 60 * 60;
+    private static final int SEVEN_EXPIRE_TIME = 7 * 24 * 60 * 60;
+    private static final int EXPIRE_TIME = 24 * 60 * 60;
     private RedisUtil redisUtil;
 
-    @Autowired
     public RedisEtagStoreManager(RedisUtil redisUtil) {
         this.redisUtil = redisUtil;
     }
@@ -39,7 +40,7 @@ public class RedisEtagStoreManager implements EtagStoreManager {
         try {
             checkKey(key);
             String s = redisUtil.get(key);
-            int expire = EXPIRE_TIME + (int) (Math.random() * 24 * 60 * 60);
+            int expire = SEVEN_EXPIRE_TIME + (int) (Math.random() * EXPIRE_TIME);
             if (StringUtils.hasLength(s)) {
                 redisUtil.expire(key, expire);
                 return s;
