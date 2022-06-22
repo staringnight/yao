@@ -15,10 +15,7 @@
 
 
     <properties>
-        <lombok.version>1.18.24</lombok.version>
-        <guava.version>31.1-jre</guava.version>
         <hutool.version>5.8.0</hutool.version>
-        <mapstruct.version>1.5.1.Final</mapstruct.version>
         <metrics.version>4.2.9</metrics.version>
         <commons.pool.version>2.11.1</commons.pool.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -39,7 +36,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
+
         </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
@@ -54,17 +51,14 @@
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-            <version>${mapstruct.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
-            <version>${mapstruct.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
         </dependency>
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
@@ -90,7 +84,6 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
-            <version>3.0.0</version>
             <scope>provided</scope>
         </dependency>
 
