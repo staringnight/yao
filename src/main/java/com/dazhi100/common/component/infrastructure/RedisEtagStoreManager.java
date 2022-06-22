@@ -2,6 +2,7 @@ package com.dazhi100.common.component.infrastructure;
 
 import com.dazhi100.common.clientcache.EtagStoreManager;
 import com.dazhi100.common.constant.ResultCode;
+import com.dazhi100.common.constant.TimeSecondConstant;
 import com.dazhi100.common.exception.ApiException;
 import com.dazhi100.common.exception.RedisException;
 import com.dazhi100.common.utils.ApiAssert;
@@ -23,8 +24,7 @@ import org.springframework.util.StringUtils;
 @Slf4j
 @ConditionalOnClass(RedisTemplate.class)
 public class RedisEtagStoreManager implements EtagStoreManager {
-    private static final int SEVEN_EXPIRE_TIME = 7 * 24 * 60 * 60;
-    private static final int EXPIRE_TIME = 24 * 60 * 60;
+
     private RedisUtil redisUtil;
 
     public RedisEtagStoreManager(RedisUtil redisUtil) {
@@ -40,7 +40,7 @@ public class RedisEtagStoreManager implements EtagStoreManager {
         try {
             checkKey(key);
             String s = redisUtil.get(key);
-            int expire = SEVEN_EXPIRE_TIME + (int) (Math.random() * EXPIRE_TIME);
+            int expire = TimeSecondConstant.ONE_WEEK + (int) (Math.random() * TimeSecondConstant.ONE_DAY);
             if (StringUtils.hasLength(s)) {
                 redisUtil.expire(key, expire);
                 return s;
