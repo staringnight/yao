@@ -77,6 +77,7 @@ public enum DefaultArgMatcherRegOption implements ArgMatcherRegOption {
                 Object o = fieldMethod.invoke(arg);
                 return String.valueOf(o);
             } catch (Exception e) {
+                log.error("find error", e);
                 throw new ApiException(ResultCode.COMMON_CLIENT_CACHE_ERROR, "searchArg error");
             }
         }
