@@ -75,6 +75,9 @@ public enum DefaultArgMatcherRegOption implements ArgMatcherRegOption {
                 Method fieldMethod = cache.get(key);
                 fieldMethod.setAccessible(true);
                 Object o = fieldMethod.invoke(arg);
+                if (o instanceof LocalDate) {
+                    return ((LocalDate) o).format(TimeConstant.UniformDateFormatter);
+                }
                 return String.valueOf(o);
             } catch (Exception e) {
                 log.error("find error", e);
