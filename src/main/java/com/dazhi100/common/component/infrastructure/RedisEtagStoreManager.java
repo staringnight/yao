@@ -15,6 +15,8 @@ import org.springframework.util.StringUtils;
 
 import java.text.MessageFormat;
 
+import static com.dazhi100.common.constant.RedisKeyCommon.REDIS_ETAG_KEY;
+
 /**
  * expire 7 day + 随机24小时内任意秒数，
  * （每次get更新过期时间，无key创建---需前置调用get方法时、get方法创建key时均校验key的正确性，不能随意创建）
@@ -28,7 +30,6 @@ import java.text.MessageFormat;
 @ConditionalOnClass(RedisTemplate.class)
 public class RedisEtagStoreManager implements EtagStoreManager {
 
-    private static final String REDIS_ETAG_KEY = "COMMON_ETAG:{0}";
 
     private RedisUtil redisUtil;
 

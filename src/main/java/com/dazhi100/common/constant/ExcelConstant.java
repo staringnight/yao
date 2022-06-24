@@ -1,6 +1,6 @@
 package com.dazhi100.common.constant;
 
-public class ExcelConstant {
+public interface ExcelConstant {
 
 
     public static final String appName = "";
@@ -365,5 +365,5 @@ public class ExcelConstant {
 
     public static final byte num_0xB4 = (byte) 0xB4;
 
-    public static int msg;
+
 }
