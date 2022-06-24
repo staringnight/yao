@@ -1,12 +1,22 @@
 package com.dazhi100.common.utils;
 
+import com.dazhi100.common.constant.TimeConstant;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -15,10 +25,20 @@ import java.util.Map;
  **/
 @Slf4j
 public class JSON {
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper;
 
     static {
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        JavaTimeModule timeModule = new JavaTimeModule();
+
+        timeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(TimeConstant.UniformDateTimeFormatter));
+        timeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(TimeConstant.UniformDateTimeFormatter));
+        timeModule.addSerializer(LocalDate.class, new LocalDateSerializer(TimeConstant.UniformDateFormatter));
+        timeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer(TimeConstant.UniformDateFormatter));
+        mapper = Jackson2ObjectMapperBuilder.json()
+                .modules(timeModule)
+                .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .featuresToDisable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .build();
     }
 
     private static ObjectMapper getObjectMapper() {

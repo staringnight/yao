@@ -2,6 +2,7 @@ package com.dazhi100.common.clientcache.update;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.dazhi100.common.constant.ResultCode;
+import com.dazhi100.common.constant.TimeConstant;
 import com.dazhi100.common.exception.ApiException;
 import com.dazhi100.common.exception.EnumException;
 import com.dazhi100.common.utils.ApiAssert;
@@ -16,6 +17,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
 import java.lang.reflect.Method;
+import java.time.LocalDate;
 
 /**
  * 单个key解析时，使用此类来划分策略组，当需要一个reg解析成多个key时，请使用handler
@@ -46,7 +48,11 @@ public enum DefaultArgMatcherRegOption implements ArgMatcherRegOption {
             int index = ArrayUtil.indexOf(parameterNames, field);
             ApiAssert.isTrue(index > -1, ResultCode.COMMON_CLIENT_CACHE_ERROR, "do not have field " + field);
             Object[] args = joinPoint.getArgs();
-            return String.valueOf(args[index]);
+            Object obj = args[index];
+            if (obj instanceof LocalDate) {
+                return ((LocalDate) obj).format(TimeConstant.UniformDateFormatter);
+            }
+            return String.valueOf(obj);
         }
     },
     /**
