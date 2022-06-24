@@ -6,9 +6,8 @@ import com.dazhi100.common.constant.TimeConstant;
 import com.dazhi100.common.exception.ApiException;
 import com.dazhi100.common.exception.EnumException;
 import com.dazhi100.common.utils.ApiAssert;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -62,16 +61,16 @@ public enum DefaultArgMatcherRegOption implements ArgMatcherRegOption {
         @Override
         public String find(JoinPoint joinPoint, String field, String model) {
 
-                MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-                String[] parameterNames = methodSignature.getParameterNames();
-                // 获取field的下标
-                int index = ArrayUtil.indexOf(parameterNames, model);
-                ApiAssert.isTrue(index > -1, ResultCode.COMMON_CLIENT_CACHE_ERROR, "do not have field " + field);
-                Object[] args = joinPoint.getArgs();
-                Object arg = args[index];
-                ApiAssert.isTrue(arg != null, ResultCode.COMMON_CLIENT_CACHE_ERROR, "arg is null");
-                Class<?> aClass = arg.getClass();
-                String key = aClass.getName() + "#" + field;
+            MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+            String[] parameterNames = methodSignature.getParameterNames();
+            // 获取field的下标
+            int index = ArrayUtil.indexOf(parameterNames, model);
+            ApiAssert.isTrue(index > -1, ResultCode.COMMON_CLIENT_CACHE_ERROR, "do not have field " + field);
+            Object[] args = joinPoint.getArgs();
+            Object arg = args[index];
+            ApiAssert.isTrue(arg != null, ResultCode.COMMON_CLIENT_CACHE_ERROR, "arg is null");
+            Class<?> aClass = arg.getClass();
+            String key = aClass.getName() + "#" + field;
             try {
                 Method fieldMethod = cache.get(key);
                 fieldMethod.setAccessible(true);
@@ -94,22 +93,19 @@ public enum DefaultArgMatcherRegOption implements ArgMatcherRegOption {
     ;
     private final String reg;
 
-    private static final LoadingCache<String, Method> cache = CacheBuilder.newBuilder()
+    private static final LoadingCache<String, Method> cache = Caffeine.newBuilder()
             .maximumSize(4096).initialCapacity(4096)
-            .build(new CacheLoader<String, Method>() {
-                @Override
-                public Method load(String key) throws ApiException, ClassNotFoundException {
-                    String[] split = key.split("#");
-                    Class<?> aClass = DefaultArgMatcherRegOption.class.getClassLoader().loadClass(split[0]);
-                    Method[] methods = aClass.getMethods();
-                    for (Method method : methods) {
-                        if (method.getName().equalsIgnoreCase("get" + split[1])) {
-                            log.info("find method {},{}", split[0], split[1]);
-                            return method;
-                        }
+            .build(key -> {
+                String[] split = key.split("#");
+                Class<?> aClass = DefaultArgMatcherRegOption.class.getClassLoader().loadClass(split[0]);
+                Method[] methods = aClass.getMethods();
+                for (Method method : methods) {
+                    if (method.getName().equalsIgnoreCase("get" + split[1])) {
+                        log.info("find method {},{}", split[0], split[1]);
+                        return method;
                     }
-                    throw new ApiException(ResultCode.COMMON_CLIENT_CACHE_ERROR, "searchArg error");
                 }
+                throw new ApiException(ResultCode.COMMON_CLIENT_CACHE_ERROR, "searchArg error");
             });
 
     public static DefaultArgMatcherRegOption getByReg(String reg) {
