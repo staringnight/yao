@@ -61,23 +61,23 @@ public enum DefaultArgMatcherRegOption implements ArgMatcherRegOption {
     searchArg("s") {
         @Override
         public String find(JoinPoint joinPoint, String field, String model) {
-
-                MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-                String[] parameterNames = methodSignature.getParameterNames();
-                // 获取field的下标
-                int index = ArrayUtil.indexOf(parameterNames, model);
-                ApiAssert.isTrue(index > -1, ResultCode.COMMON_CLIENT_CACHE_ERROR, "do not have field " + field);
-                Object[] args = joinPoint.getArgs();
-                Object arg = args[index];
-                ApiAssert.isTrue(arg != null, ResultCode.COMMON_CLIENT_CACHE_ERROR, "arg is null");
-                Class<?> aClass = arg.getClass();
-                String key = aClass.getName() + "#" + field;
+            MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+            String[] parameterNames = methodSignature.getParameterNames();
+            // 获取field的下标
+            int index = ArrayUtil.indexOf(parameterNames, model);
+            ApiAssert.isTrue(index > -1, ResultCode.COMMON_CLIENT_CACHE_ERROR, "do not have field " + field);
+            Object[] args = joinPoint.getArgs();
+            Object arg = args[index];
+            ApiAssert.isTrue(arg != null, ResultCode.COMMON_CLIENT_CACHE_ERROR, "arg is null");
+            Class<?> aClass = arg.getClass();
+            String key = aClass.getName() + "#" + field;
             try {
                 Method fieldMethod = cache.get(key);
                 fieldMethod.setAccessible(true);
                 Object o = fieldMethod.invoke(arg);
                 return String.valueOf(o);
             } catch (Exception e) {
+                log.error("find error", e);
                 throw new ApiException(ResultCode.COMMON_CLIENT_CACHE_ERROR, "searchArg error");
             }
         }
