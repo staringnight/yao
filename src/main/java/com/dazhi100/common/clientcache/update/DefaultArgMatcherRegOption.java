@@ -61,7 +61,7 @@ public enum DefaultArgMatcherRegOption implements ArgMatcherRegOption {
     searchArg("s") {
         @Override
         public String find(JoinPoint joinPoint, String field, String model) {
-            try {
+
                 MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
                 String[] parameterNames = methodSignature.getParameterNames();
                 // 获取field的下标
@@ -72,6 +72,7 @@ public enum DefaultArgMatcherRegOption implements ArgMatcherRegOption {
                 ApiAssert.isTrue(arg != null, ResultCode.COMMON_CLIENT_CACHE_ERROR, "arg is null");
                 Class<?> aClass = arg.getClass();
                 String key = aClass.getName() + "#" + field;
+            try {
                 Method fieldMethod = cache.get(key);
                 fieldMethod.setAccessible(true);
                 Object o = fieldMethod.invoke(arg);
