@@ -2,22 +2,21 @@ package com.dazhi100.common.bean;
 
 import com.dazhi100.common.constant.ResultCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.util.StringUtils;
 
 @Getter
 @ToString
-@ApiModel
+@Schema(name = "返回Result")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Result<T> {
-    @ApiModelProperty(value = "状态码", notes = "默认200是成功")
+    @Schema(name = "状态码", description = "默认200是成功")
     private int responseCode;
-    @ApiModelProperty(value = "响应信息", notes = "来说明响应情况")
+    @Schema(name = "响应信息", description = "来说明响应情况")
     private String responseMessage;
-    @ApiModelProperty(value = "响应的具体数据")
+    @Schema(name = "响应的具体数据")
     private T data;
 
     //----------------------------禁用构造方法，只能使用success or error--------------------------、、
