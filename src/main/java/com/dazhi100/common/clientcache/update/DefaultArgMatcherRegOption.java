@@ -48,10 +48,10 @@ public enum DefaultArgMatcherRegOption implements ArgMatcherRegOption {
             ApiAssert.isTrue(index > -1, ResultCode.COMMON_CLIENT_CACHE_ERROR, "do not have field " + field);
             Object[] args = joinPoint.getArgs();
             Object obj = args[index];
-            if (obj instanceof LocalDate) {
-                return ((LocalDate) obj).format(TimeConstant.UniformDateFormatter);
-            }
-            return String.valueOf(obj);
+            return switch (obj) {
+                case LocalDate date -> date.format(TimeConstant.UniformDateFormatter);
+                default -> String.valueOf(obj);
+            };
         }
     },
     /**
@@ -74,11 +74,11 @@ public enum DefaultArgMatcherRegOption implements ArgMatcherRegOption {
             try {
                 Method fieldMethod = cache.get(key);
                 fieldMethod.setAccessible(true);
-                Object o = fieldMethod.invoke(arg);
-                if (o instanceof LocalDate) {
-                    return ((LocalDate) o).format(TimeConstant.UniformDateFormatter);
-                }
-                return String.valueOf(o);
+                Object obj = fieldMethod.invoke(arg);
+                return switch (obj) {
+                    case LocalDate date -> date.format(TimeConstant.UniformDateFormatter);
+                    default -> String.valueOf(obj);
+                };
             } catch (Exception e) {
                 log.error("find error", e);
                 throw new ApiException(ResultCode.COMMON_CLIENT_CACHE_ERROR, "searchArg error");
@@ -97,20 +97,18 @@ public enum DefaultArgMatcherRegOption implements ArgMatcherRegOption {
     ;
     private final String reg;
 
-    private static final LoadingCache<String, Method> cache = Caffeine.newBuilder()
-            .maximumSize(4096).initialCapacity(4096)
-            .build(key -> {
-                String[] split = key.split("#");
-                Class<?> aClass = DefaultArgMatcherRegOption.class.getClassLoader().loadClass(split[0]);
-                Method[] methods = aClass.getMethods();
-                for (Method method : methods) {
-                    if (method.getName().equalsIgnoreCase("get" + split[1])) {
-                        log.info("find method {},{}", split[0], split[1]);
-                        return method;
-                    }
-                }
-                throw new ApiException(ResultCode.COMMON_CLIENT_CACHE_ERROR, "searchArg error");
-            });
+    private static final LoadingCache<String, Method> cache = Caffeine.newBuilder().maximumSize(4096).initialCapacity(4096).build(key -> {
+        String[] split = key.split("#");
+        Class<?> aClass = DefaultArgMatcherRegOption.class.getClassLoader().loadClass(split[0]);
+        Method[] methods = aClass.getMethods();
+        for (Method method : methods) {
+            if (method.getName().equalsIgnoreCase("get" + split[1])) {
+                log.info("find method {},{}", split[0], split[1]);
+                return method;
+            }
+        }
+        throw new ApiException(ResultCode.COMMON_CLIENT_CACHE_ERROR, "searchArg error");
+    });
 
     public static DefaultArgMatcherRegOption getByReg(String reg) {
         for (DefaultArgMatcherRegOption options : DefaultArgMatcherRegOption.values()) {
