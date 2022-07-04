@@ -24,8 +24,13 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 public class WeComPushUtil {
-    @Autowired
     private Environment environment;
+
+    @Autowired
+    public WeComPushUtil(Environment environment) {
+        this.environment = environment;
+    }
+
     /**
      * 线程池
      */
