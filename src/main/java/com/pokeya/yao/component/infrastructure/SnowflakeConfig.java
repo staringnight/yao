@@ -12,7 +12,7 @@ public class SnowflakeConfig {
 
     @Lazy
     @Bean
-    public Snowflake snowflake(@Value("{snow.wokerId}") int wokerId, @Value("{snow.datacenterId}") int datacenterId) {
+    public Snowflake snowflake(@Value("${snow.wokerId}") int wokerId, @Value("${snow.datacenterId}") int datacenterId) {
         return IdUtil.getSnowflake(wokerId, datacenterId);
     }
 
