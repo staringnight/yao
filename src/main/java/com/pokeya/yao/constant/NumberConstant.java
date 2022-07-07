@@ -1,11 +1,14 @@
 package com.pokeya.yao.constant;
 
-public interface ExcelConstant {
+/**
+ * @author mac
+ */
+public interface NumberConstant {
 
 
     public static final String appName = "";
 
-    public static final String companyName = "大智云校";
+    public static final String companyName = "破壳鸭";
     /**
      * 系统用到的数字
      */
