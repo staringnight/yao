@@ -11,14 +11,14 @@ import java.text.MessageFormat;
 @Configuration
 public class CommonSwaggerConfig {
     public static final String SWAGGER_VERSION = "1.0.0";
-    public static final String SWAGGER_TITLE = "大智云校 SERVER API";
+    public static final String SWAGGER_TITLE = "破壳鸭 SERVER API";
 
     @Bean
     public OpenAPI openAPI(@Value("${spring.application.name}") String application) {
         return new OpenAPI()
                 .info(new Info()
                         .title(SWAGGER_TITLE)
-                        .description(MessageFormat.format("大智云校 {0} API.", application))
+                        .description(MessageFormat.format("破壳鸭 {0} API.", application))
                         .version(SWAGGER_VERSION));
     }
 }
