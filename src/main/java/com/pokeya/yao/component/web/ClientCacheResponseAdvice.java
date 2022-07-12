@@ -45,7 +45,12 @@ public class ClientCacheResponseAdvice implements ResponseBodyAdvice<Object> {
     @Override
     public Object beforeBodyWrite(Object data, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         try {
-            ClientCacheConfigBean config = clientCacheConfig.getKeyConfigFromPath("/" + baseUrl + request.getURI().getPath());
+            String path = "/" + baseUrl + request.getURI().getPath();
+            ClientCacheConfigBean config = clientCacheConfig.getKeyConfigFromPath(path);
+            if (config == null) {
+                log.warn("ClientCacheResponseAdvice warn 没有配置:{}", path);
+                return data;
+            }
             String keyConfig = config.getKeyConfig();
             String matcherConfig = config.getMatcherConfig();
             String realKey = ClientCacheConfigBean.expressKey(keyConfig, matcherConfig, request);
