@@ -21,6 +21,7 @@ public enum ResultCode {
     COMMON_HTTP_METHOD_ERROR(1002, "http请求方式错误"),
     COMMON_CLIENT_CACHE_ERROR(1003, "客户端缓存配置错误"),
     REDIS_ERROR(1004, "redis 操作失败"),
+    COMMON_UNAUTHOR(1005, "权限不足"),
     SUCCESS(200, "成功");
     //-------------------------通用系统code----------------------------//
 
