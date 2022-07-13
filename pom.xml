@@ -15,6 +15,7 @@
 
 
     <properties>
+        <jjwt.version>0.9.1</jjwt.version>
         <hutool.version>5.8.0</hutool.version>
         <metrics.version>4.2.9</metrics.version>
         <commons.pool.version>2.11.1</commons.pool.version>
@@ -111,6 +112,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jjwt.version}</version>
         </dependency>
     </dependencies>
 

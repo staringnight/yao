@@ -22,9 +22,15 @@ public enum ResultCode {
     COMMON_CLIENT_CACHE_ERROR(1003, "客户端缓存配置错误"),
     REDIS_ERROR(1004, "redis 操作失败"),
     COMMON_UNAUTHOR(1005, "权限不足"),
-    SUCCESS(200, "成功");
+    SUCCESS(200, "成功"),
     //-------------------------通用系统code----------------------------//
 
+
+    //-------user------
+    USER_ERROR(2000, "用户不存在或密码错误"),
+    //-------user------
+
+    ;
     private final Integer code;
     private final String desc;
 }
