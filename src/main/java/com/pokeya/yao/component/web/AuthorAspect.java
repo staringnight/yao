@@ -28,7 +28,7 @@ public class AuthorAspect {
     }
 
     @Pointcut("@annotation(com.pokeya.yao.annotation.AuthCheck)")
-    public void authCheckDirct() {
+    public void authCheckDirect() {
 
     }
 
