@@ -28,37 +28,37 @@ public class JwtTokenHelper implements Serializable {
 
     private static final Long EXPIRATION_TIME = 15L;
 
-    public Claims getAllClaimsFromToken(String token) {
+    public static Claims getAllClaimsFromToken(String token) {
         return Jwts.parser().setSigningKey(Base64.getEncoder().encodeToString(SECRET.getBytes())).parseClaimsJws(token).getBody();
     }
 
-    public String getAccountFromToken(String token) {
+    public static String getAccountFromToken(String token) {
         return getAllClaimsFromToken(token).getSubject();
     }
 
-    public Date getExpirationDateFromToken(String token) {
+    public static Date getExpirationDateFromToken(String token) {
         return getAllClaimsFromToken(token).getExpiration();
     }
 
-    private Boolean isTokenExpired(String token) {
+    private static Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
 
-    public String generateToken(JwtUser user) {
+    public static String generateToken(JwtUser user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(UserEnum.BASE.getCode(), user);
         return doGenerateToken(claims, user.getAccount());
     }
 
-    private String doGenerateToken(Map<String, Object> claims, String account) {
+    private static String doGenerateToken(Map<String, Object> claims, String account) {
 
         final Date createdDate = new Date();
         final Date expirationDate = new Date(createdDate.getTime() + Duration.ofDays(EXPIRATION_TIME).toSeconds());
         return Jwts.builder().setClaims(claims).setSubject(account).setIssuedAt(createdDate).setExpiration(expirationDate).signWith(SignatureAlgorithm.HS512, Base64.getEncoder().encodeToString(SECRET.getBytes())).compact();
     }
 
-    public Boolean validateToken(String token) {
+    public static Boolean validateToken(String token) {
         return !isTokenExpired(token);
     }
 }
