@@ -8,7 +8,7 @@ import java.lang.annotation.*;
  * @Author chentong
  * @Date 2022/7/12 6:44 PM
  */
-@Target({ElementType.ANNOTATION_TYPE})
+@Target({ElementType.ANNOTATION_TYPE,ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface AuthCheck {
