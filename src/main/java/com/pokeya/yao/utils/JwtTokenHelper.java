@@ -3,9 +3,15 @@ package com.pokeya.yao.utils;
 import com.pokeya.yao.dict.UserEnum;
 import com.pokeya.yao.utils.beans.JwtUser;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.Base64;
@@ -19,7 +25,10 @@ import java.util.Map;
 public class JwtTokenHelper implements Serializable {
 
     private static final long serialVersionUID = 1579222883969867182L;
-
+    /**
+     * OAUTH2 令牌类型 https://oauth.net/2/bearer-tokens/
+     */
+    private static final String OAUTH2_TOKEN_TYPE = "bearer";
     /**
      * 加密解密密钥
      * ws.dzyx.100:sn:sid md5加密后的前16位 9da20f0c4784d233
@@ -30,6 +39,18 @@ public class JwtTokenHelper implements Serializable {
 
     public static Claims getAllClaimsFromToken(String token) {
         return Jwts.parser().setSigningKey(Base64.getEncoder().encodeToString(SECRET.getBytes())).parseClaimsJws(token).getBody();
+    }
+
+    public static Claims getAllClaims() {
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = servletRequestAttributes.getRequest();
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (StringUtils.isNotBlank(authHeader) && StringUtils.startsWith(authHeader, OAUTH2_TOKEN_TYPE)) {
+            String authToken = StringUtils.substringAfter(authHeader, OAUTH2_TOKEN_TYPE).trim();
+            JwtParser jwtParser = Jwts.parser().setSigningKey(Base64.getEncoder().encodeToString(SECRET.getBytes()));
+            return jwtParser.parseClaimsJws(authToken).getBody();
+        }
+        return null;
     }
 
     public static String getAccountFromToken(String token) {
