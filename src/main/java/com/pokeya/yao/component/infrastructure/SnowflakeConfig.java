@@ -18,8 +18,9 @@ public class SnowflakeConfig {
 
     @Lazy
     @Bean
-    public Snowflake snowflake(@Value("${server.port}") int datacenterId) {
-        Long wokerId = HashUtil.mixHash(workIdStr);
+    public Snowflake snowflake(@Value("${server.port}") String datacenterIdStr) {
+        int wokerId = HashUtil.additiveHash(workIdStr, 32);
+        int datacenterId = HashUtil.additiveHash(datacenterIdStr, 32);
         log.info("SnowflakeConfig:{}:{}", wokerId, datacenterId);
         return IdUtil.getSnowflake(wokerId, datacenterId);
     }
