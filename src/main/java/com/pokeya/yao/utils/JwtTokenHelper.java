@@ -1,6 +1,6 @@
 package com.pokeya.yao.utils;
 
-import com.pokeya.yao.dict.UserEnum;
+import com.pokeya.yao.dict.TokenEnum;
 import com.pokeya.yao.utils.beans.JwtUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
@@ -30,7 +30,8 @@ public class JwtTokenHelper implements Serializable {
     /**
      * OAUTH2 令牌类型 https://oauth.net/2/bearer-tokens/
      */
-    private static final String OAUTH2_TOKEN_TYPE = "bearer";
+    public static final String OAUTH2_TOKEN_TYPE = "bearer";
+    public static final String BEARER_FORMAT = "JWT";
     /**
      * 加密解密密钥
      * ws.dzyx.100:sn:sid md5加密后的前16位 9da20f0c4784d233
@@ -70,7 +71,7 @@ public class JwtTokenHelper implements Serializable {
 
     public static String generateToken(JwtUser user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put(UserEnum.BASE.getCode(), user);
+        claims.put(TokenEnum.BASE.getCode(), user);
         return doGenerateToken(claims, user.getAccount());
     }
 
