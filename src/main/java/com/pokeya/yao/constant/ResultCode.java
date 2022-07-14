@@ -23,6 +23,7 @@ public enum ResultCode {
     REDIS_ERROR(1004, "redis 操作失败"),
     COMMON_UNAUTHOR(1005, "权限不足"),
     SUCCESS(200, "成功"),
+    SEND_SMS_ERROR(1023,"短信发送失败，请重新发送(停机 网络异常等也会导致短信发送失败)"),
     //-------------------------通用系统code----------------------------//
 
 
