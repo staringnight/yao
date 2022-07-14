@@ -30,7 +30,7 @@ public class JwtTokenHelper implements Serializable {
     /**
      * OAUTH2 令牌类型 https://oauth.net/2/bearer-tokens/
      */
-    public static final String OAUTH2_TOKEN_TYPE = "bearer";
+    public static final String OAUTH2_TOKEN_TYPE = "Bearer";
     public static final String BEARER_FORMAT = "JWT";
     /**
      * 加密解密密钥
