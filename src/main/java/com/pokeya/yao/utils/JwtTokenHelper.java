@@ -23,6 +23,8 @@ import java.util.Map;
  * @author mac
  */
 public class JwtTokenHelper implements Serializable {
+    private JwtTokenHelper() {
+    }
 
     private static final long serialVersionUID = 1579222883969867182L;
     /**

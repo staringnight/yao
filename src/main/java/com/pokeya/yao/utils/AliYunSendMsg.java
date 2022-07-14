@@ -30,6 +30,9 @@ import java.util.Date;
  */
 @Slf4j
 public class AliYunSendMsg {
+    private AliYunSendMsg() {
+    }
+
     private static final String SMS_SIGNNAME = "大智云校";
     private static final String SMS_DEFAULT_POI = "cn-hangzhou";
     // 产品名称:云通信短信API产品,开发者无需替换
