@@ -13,7 +13,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public enum ResultCode {
+public enum ResultCode implements CodeEnum {
     //-------------------------通用系统code----------------------------//
     //通用，接口内部异常，不直接显示给用户
     COMMON_API_FAIL(1000, "服务器繁忙，请稍后再试"),
@@ -24,14 +24,7 @@ public enum ResultCode {
     COMMON_UNAUTHOR(1005, "权限不足"),
     SUCCESS(200, "成功"),
     SEND_SMS_ERROR(1023, "短信发送失败，请重新发送(停机 网络异常等也会导致短信发送失败)"),
-    SMS_ERROR(1024, "发送短信次数过多"),
-    SMS_CODE_ERROR(1025, "验证码错误"),
     //-------------------------通用系统code----------------------------//
-
-
-    //-------user------
-    USER_ERROR(2000, "用户不存在或密码错误"),
-    //-------user------
 
     ;
     private final Integer code;

@@ -1,7 +1,8 @@
 package com.pokeya.yao.bean;
 
-import com.pokeya.yao.constant.ResultCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.pokeya.yao.constant.CodeEnum;
+import com.pokeya.yao.constant.ResultCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.ToString;
@@ -24,11 +25,11 @@ public class Result<T> {
         this(ResultCode.SUCCESS, null, data);
     }
 
-    private Result(ResultCode resultCode, String message) {
+    private Result(CodeEnum resultCode, String message) {
         this(resultCode, message, null);
     }
 
-    private Result(ResultCode resultCode, String message, T data) {
+    private Result(CodeEnum resultCode, String message, T data) {
         this.responseCode = resultCode.getCode();
         this.responseMessage = StringUtils.hasLength(message) ? message : resultCode.getDesc();
         this.data = data;
@@ -40,7 +41,7 @@ public class Result<T> {
         return new Result<>(data);
     }
 
-    public static <T> Result<T> error(ResultCode resultCode) {
+    public static <T> Result<T> error(CodeEnum resultCode) {
         return new Result<>(resultCode, null);
     }
 
@@ -52,7 +53,7 @@ public class Result<T> {
      * @param <T>
      * @return
      */
-    public static <T> Result<T> error(ResultCode resultCode, String message) {
+    public static <T> Result<T> error(CodeEnum resultCode, String message) {
         return new Result<>(resultCode, message);
     }
 

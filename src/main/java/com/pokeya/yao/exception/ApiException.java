@@ -1,12 +1,13 @@
 package com.pokeya.yao.exception;
 
+import com.pokeya.yao.constant.CodeEnum;
 import com.pokeya.yao.constant.ResultCode;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 
 @Getter
 public class ApiException extends RuntimeException {
-    private ResultCode resultCode;
+    private CodeEnum resultCode;
 
     /**
      * 默认为接口异常
@@ -29,7 +30,7 @@ public class ApiException extends RuntimeException {
      *
      * @param resultCode
      */
-    public ApiException(ResultCode resultCode) {
+    public ApiException(CodeEnum resultCode) {
         this(resultCode, null);
     }
 
@@ -39,7 +40,7 @@ public class ApiException extends RuntimeException {
      * @param resultCode
      * @param msg
      */
-    public ApiException(ResultCode resultCode, String msg) {
+    public ApiException(CodeEnum resultCode, String msg) {
         super(StringUtils.hasLength(msg) ? msg : resultCode.getDesc());
         this.resultCode = resultCode;
     }
