@@ -10,7 +10,7 @@ public class JwtUser {
     /**
      * 用户id
      */
-    private String id;
+    private Long id;
     /**
      * 账号
      */
