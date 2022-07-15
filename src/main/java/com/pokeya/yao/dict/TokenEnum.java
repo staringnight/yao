@@ -3,11 +3,11 @@ package com.pokeya.yao.dict;
 /**
  * @author mac
  */
-public enum UserEnum {
+public enum TokenEnum {
     /**
      * 权限
      */
-//    PERMISSION("permission"),
+    PERMISSION("permission"),
     /**
      * 基础信息
      */
@@ -15,7 +15,7 @@ public enum UserEnum {
     ;
     private String code;
 
-    UserEnum(String code) {
+    TokenEnum(String code) {
         this.code = code;
     }
 
