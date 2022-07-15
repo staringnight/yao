@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.annotation.Order;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -55,6 +56,12 @@ public class WebExceptionHandler {
 
         // 没有注解就提取错误提示信息进行返回统一错误码
         return Result.error(ResultCode.COMMON_PARAMS_ERROR, defaultMessage);
+    }
+
+    @ExceptionHandler(BindException.class)
+    public Result<String> MissingServletRequestParameterBindExceptionHandler(BindException e) {
+        String defaultMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        return Result.error(ResultCode.COMMON_PARAMS_ERROR, "请求参数错误：" + defaultMessage);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
