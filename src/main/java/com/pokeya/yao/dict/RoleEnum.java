@@ -11,8 +11,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum RoleEnum {
-    UNKONW(-1, "未知"), ADMIN(0, "超管"), CLASSMANAGER(1, "班管"),
-    TEACHER(2, "老师"), PARENT(3, "家长"), RAM(4, "子管");
+    UNKONW(-1, "未知"), TEACHER(0, "教师"), PARENT(1, "家长"),
+    ADMIN(2, "超管"), CLASSMANAGER(3, "班管"), RAM(4, "子管");
 
     private final int id;
     private final String desc;
